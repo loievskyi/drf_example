@@ -36,6 +36,7 @@ class ReadTransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
         fields = (
+            "id",
             "amount",
             "currency",
             "date",

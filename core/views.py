@@ -8,11 +8,13 @@ from core.serializers import CurrencySerializer, CategorySerializer, ReadTransac
 class CurrencyListAPIView(ListAPIView):
     queryset = Currency.objects.all()
     serializer_class = CurrencySerializer
+    pagination_class = None
 
 
 class CategoryModelViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    pagination_class = None
 
 
 class TransactionModelViewSet(ModelViewSet):
