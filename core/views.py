@@ -1,8 +1,8 @@
 from rest_framework.generics import ListAPIView
 from rest_framework.viewsets import ModelViewSet
 
-from core.models import Currency, Category
-from core.serializers import CurrencySerializer, CategorySerializer
+from core.models import Currency, Category, Transaction
+from core.serializers import CurrencySerializer, CategorySerializer, ReadTransactionSerializer, WriteTransactionSerializer
 
 
 class CurrencyListAPIView(ListAPIView):
@@ -13,3 +13,13 @@ class CurrencyListAPIView(ListAPIView):
 class CategoryModelViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+
+
+class TransactionModelViewSet(ModelViewSet):
+    queryset = Transaction.objects.select_related("currency", "category")
+
+    def get_serializer_class(self):
+        if self.action in ("list", "retrieve"):
+            return ReadTransactionSerializer
+        else:
+            return WriteTransactionSerializer
