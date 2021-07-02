@@ -1,3 +1,4 @@
+from rest_framework import filters
 from rest_framework.generics import ListAPIView
 from rest_framework.viewsets import ModelViewSet
 
@@ -19,6 +20,8 @@ class CategoryModelViewSet(ModelViewSet):
 
 class TransactionModelViewSet(ModelViewSet):
     queryset = Transaction.objects.select_related("currency", "category")
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ("description",)
 
     def get_serializer_class(self):
         if self.action in ("list", "retrieve"):
