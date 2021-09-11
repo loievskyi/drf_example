@@ -5,8 +5,10 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 
 from core.models import Currency, Category, Transaction
-from core.serializers import CurrencySerializer, CategorySerializer, ReadTransactionSerializer, \
+from core.serializers import (
+    CurrencySerializer, CategorySerializer, ReadTransactionSerializer,
     WriteTransactionSerializer
+)
 
 
 class CurrencyListAPIView(ListAPIView):
@@ -26,13 +28,16 @@ class CategoryModelViewSet(ModelViewSet):
 
 class TransactionModelViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated,)
-    filter_backends = (filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend)
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter,
+                       DjangoFilterBackend)
     search_fields = ("description",)
     ordering_fields = ("amount", "date")
     filterset_fields = ("currency__code",)
 
     def get_queryset(self):
-        return Transaction.objects.select_related("currency", "category", "user").filter(user=self.request.user)
+        return (Transaction.objects
+                .select_related("currency", "category", "user")
+                .filter(user=self.request.user))
 
     def get_serializer_class(self):
         if self.action in ("list", "retrieve"):
