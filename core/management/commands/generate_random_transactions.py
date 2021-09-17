@@ -3,6 +3,7 @@ from decimal import Decimal
 
 from django.utils import timezone
 from django.core.management.base import BaseCommand
+from django.contrib.auth.models import User
 
 from core.models import Category, Currency, Transaction
 
@@ -15,16 +16,22 @@ class Command(BaseCommand):
             "total", type=int,
             help="Indicates the number of transactions to be created"
         )
+        parser.add_argument(
+            "user", type=str,
+            help="The username of the owner of the transaction"
+        )
 
     def handle(self, *args, **kwargs):
         total = kwargs.get("total", 0)
+        user = User.objects.filter(username=kwargs.get("user")).first()
         currencies = list(Currency.objects.all())
         categories = list(Category.objects.all())
         txs = []
 
         try:
-            for i in range(1000):
+            for i in range(total):
                 tx = Transaction(
+                    user=user,
                     amount=random.randrange(Decimal(1), Decimal(1000)),
                     currency=random.choice(currencies),
                     description="",
